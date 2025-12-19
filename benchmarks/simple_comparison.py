@@ -3,7 +3,6 @@ Simple, clean comparison between TensorFlow and fast-tf-idf
 Shows vocabulary and IDF weights side-by-side for easy inspection.
 """
 
-import tensorflow as tf
 from tensorflow.keras.layers import TextVectorization
 
 from fast_tfidf.main import get_vocabulary_and_idf_weights
@@ -38,7 +37,7 @@ vectorizer.adapt(documents)
 tf_vocab = [term for term in vectorizer.get_vocabulary() if term and term != "[UNK]"]
 
 print(f"\nFound {len(tf_vocab)} terms")
-print(f"\nTop 10 terms (by document frequency):")
+print("\nTop 10 terms (by document frequency):")
 print(f"{'Term':<20} {'IDF Weight':<15}")
 print("-" * 35)
 for term in tf_vocab[:10]:
@@ -57,7 +56,7 @@ vocab, idf_weights = get_vocabulary_and_idf_weights(
 )
 
 print(f"\nFound {len(vocab)} terms")
-print(f"\nTop 10 terms (by document frequency):")
+print("\nTop 10 terms (by document frequency):")
 print(f"{'Term':<20} {'IDF Weight':<15}")
 print("-" * 35)
 for term, idf in zip(vocab[:10], idf_weights[:10]):
@@ -94,6 +93,6 @@ print("=" * 70)
 print("Both implementations correctly identify terms and order them by frequency.")
 print("IDF values differ due to different formulas:")
 print("  • TensorFlow: Uses its own internal formula")
-print(f"  • fast-tf-idf: log((1 + n_docs) / (1 + df)) + 1 (sklearn-style)")
+print("  • fast-tf-idf: log((1 + n_docs) / (1 + df)) + 1 (sklearn-style)")
 print("\nBoth are valid - choose based on your ecosystem and requirements.")
 print("=" * 70)

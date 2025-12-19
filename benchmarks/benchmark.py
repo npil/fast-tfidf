@@ -10,7 +10,6 @@ from statistics import mean, stdev
 import numpy as np
 
 try:
-    import tensorflow as tf
     from tensorflow.keras.layers import TextVectorization
 
     TENSORFLOW_AVAILABLE = True
@@ -129,19 +128,19 @@ def benchmark_fast_tfidf(documents, max_tokens=None, n_runs=3):
 def format_time(seconds):
     """Format time in human-readable format."""
     if seconds < 0.001:
-        return f"{seconds*1000000:.2f} μs"
+        return f"{seconds * 1000000:.2f} μs"
     elif seconds < 1:
-        return f"{seconds*1000:.2f} ms"
+        return f"{seconds * 1000:.2f} ms"
     else:
         return f"{seconds:.2f} s"
 
 
 def run_benchmark(n_docs, words_per_doc_range, vocabulary_size, max_tokens=None, n_runs=3):
     """Run a single benchmark comparison."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"Benchmark: {n_docs:,} documents, {words_per_doc_range[0]}-{words_per_doc_range[1]} words/doc")
     print(f"Vocabulary size: {vocabulary_size:,}, Max tokens: {max_tokens or 'unlimited'}")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     # Generate documents
     print("Generating documents...")
@@ -182,7 +181,7 @@ def run_benchmark(n_docs, words_per_doc_range, vocabulary_size, max_tokens=None,
         if speedup > 1:
             print(f"✓ fast-tf-idf is {speedup:.2f}x FASTER than TensorFlow")
         else:
-            print(f"✗ fast-tf-idf is {1/speedup:.2f}x SLOWER than TensorFlow")
+            print(f"✗ fast-tf-idf is {1 / speedup:.2f}x SLOWER than TensorFlow")
 
         print(f"\nAbsolute difference: {format_time(abs(tf_results['mean'] - our_results['mean']))}")
 
@@ -231,7 +230,7 @@ def main():
             tf_time = format_time(result["tf_results"]["mean"])
             our_time = format_time(result["our_results"]["mean"])
             speedup = result["tf_results"]["mean"] / result["our_results"]["mean"]
-            speedup_str = f"{speedup:.2f}x" if speedup > 1 else f"-{1/speedup:.2f}x"
+            speedup_str = f"{speedup:.2f}x" if speedup > 1 else f"-{1 / speedup:.2f}x"
         else:
             tf_time = "N/A"
             our_time = format_time(result["our_results"]["mean"])
@@ -244,13 +243,15 @@ def main():
     print("=" * 70)
 
     if results and results[0]["tf_results"]:
-        avg_speedup = mean([r["tf_results"]["mean"] / r["our_results"]["mean"] for r in results if r["tf_results"]])
+        avg_speedup = mean(
+            [r["tf_results"]["mean"] / r["our_results"]["mean"] for r in results if r["tf_results"]]
+        )
 
         if avg_speedup > 1:
             print(f"On average, fast-tf-idf is {avg_speedup:.2f}x FASTER than TensorFlow")
             print("for vocabulary extraction and IDF weight calculation.")
         else:
-            print(f"On average, fast-tf-idf is {1/avg_speedup:.2f}x SLOWER than TensorFlow")
+            print(f"On average, fast-tf-idf is {1 / avg_speedup:.2f}x SLOWER than TensorFlow")
             print("for vocabulary extraction and IDF weight calculation.")
 
         print("\nNote: These benchmarks measure only the vocabulary and IDF extraction.")
