@@ -1,35 +1,42 @@
-SHELL := /usr/bin/env bash -O globstar
+.PHONY: mypy
+mypy:
+	poetry run mypy .
 
-.PHONY: check-licenses
-check-licenses:
-	poetry export > requirements.txt
-	poetry run liccheck -l PARANOID
 
-.PHONY: fix
-fix:
-	poetry run black .
-	poetry run isort .
+.PHONY: isort
+isort:
+	poetry run isort --check --diff .
 
-.PHONY: install
-install:
-	LDFLAGS="${LDFLAGS} -fno-lto -Wl,--no-as-needed" poetry install
 
 .PHONY: lint
 lint:
-	poetry run black --check --diff tests fast_tfidf
-	poetry run isort --check tests fast_tfidf
-	poetry run flake8 tests fast_tfidf
-	poetry run mypy tests fast_tfidf
+	poetry run ruff check
+	make isort
+	make mypy
+
+
+.PHONY: fix
+fix:
+	poetry run isort .
+	poetry run ruff format
+
+
+.PHONY: app
+app:
+	poetry run python -m fraud_detector.main
+
 
 .PHONY: test
 test:
-	poetry run pytest ./tests
+	poetry run pytest
 
-.PHONY: lint-test
-lint-test:
-	$(MAKE) lint
-	$(MAKE) test
 
-.PHONY: publish
-publish:
-	poetry publish --build
+.PHONY: test-lint
+test-lint:
+	make test
+	make lint
+
+
+.PHONY: install
+install:
+	poetry install
