@@ -3,14 +3,14 @@
 A blazingly fast TF-IDF implementation for Python that uses multiprocessing to parallelise document processing.
 
 **Key Features:**
-- 🚀 **7-97x faster** than TensorFlow's TextVectorization (see benchmarks below)
+- 🚀 orders of magnitude **faster** than TensorFlow's TextVectorization (see benchmarks below)
 - 🔧 **tensorflow-compatible** vocabulary and idf weights can be used with TensorFlow's TextVectorization, it just computes them much quicker
 
 ## Installation
 
 ```bash
 # Using pip
-pip install fast-tf-idf
+pip install fast-tfidf
 
 # Or install from source
 git clone https://github.com/npil/fast-tfidf.git
@@ -78,14 +78,14 @@ from fast_tfidf import get_vocabulary_and_idf_weights
 
 vocabulary, idf_weights = get_vocabulary_and_idf_weights(documents, n_features=2000)
 
-vectorizer = TextVectorization(
+vectoriser = TextVectorization(
     vocabulary=vocabulary,
     idf_weights=idf_weights,
     output_mode='tf_idf'
 )
 
 # No adapt() needed - use pre-computed weights! 🚀
-# Your model can now use 'vectorizer' for TF-IDF transformation
+# Your model can now use 'vectoriser' for TF-IDF transformation
 ```
 
 **Note:** Although fast-tf-idf uses a different IDF formula than TensorFlow's default `log((1 + n_docs) / (1 + df)) + 1` vs TensorFlow's internal formula), this only affects absolute values while preserving relative term importance.
