@@ -1,5 +1,5 @@
 """
-Simple, clean comparison between TensorFlow and fast-tf-idf
+Simple, clean comparison between TensorFlow and fast-tfidf
 Shows vocabulary and IDF weights side-by-side for easy inspection.
 """
 

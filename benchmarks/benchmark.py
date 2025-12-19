@@ -1,5 +1,5 @@
 """
-Performance benchmark comparing TensorFlow's TextVectorization with fast-tf-idf.
+Performance benchmark comparing TensorFlow's TextVectorization with fast-tfidf.
 Measures execution time with various document corpus sizes.
 """
 
