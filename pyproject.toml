@@ -1,0 +1,62 @@
+[project]
+name = "fast_tfidf"
+version = "0.1.0"
+description = "A fast implementation of tf-idf"
+authors = [
+    {name = "Nathan Pilkington"}
+]
+license = {text = "apache 2.0"}
+readme = "README.md"
+requires-python = "^3.11"
+dependencies = [
+    "numpy (>=2.3.0,<3.0.0)",
+    "nltk (>=3.9.1,<4.0.0)"
+]
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
+mypy = "^1.16.1"
+isort = "^6.0.1"
+flake8 = "^7.2.0"
+black = "^25.1.0"
+
+[tool.isort]
+line_length=118
+multi_line_output=3
+include_trailing_comma="True"
+
+[tool.mypy]
+exclude = ["venv", ".venv"]
+disallow_untyped_defs="True"
+disallow_incomplete_defs="True"
+show_error_codes="True"
+
+[tool.black]
+target-version = ['py311']
+line-length = 118
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | service_contract
+    | pgdata
+    | docs
+  )/
+)
+'''
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
