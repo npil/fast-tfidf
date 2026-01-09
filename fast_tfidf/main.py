@@ -69,4 +69,4 @@ def get_vocabulary_and_idf_weights(
 
 
 def split_sentence(sentence):
-    return [x.lower() for x in re.split("\W+", sentence.strip()) if x]
+    return [x.lower() for x in re.split(r"\W+", sentence.strip()) if x]
