@@ -57,8 +57,7 @@ def get_vocabulary_and_idf_weights(
     counters = count_tokens_sharded(text, remove_stopwords=remove_stopwords, use_bigrams=use_bigrams)
 
     counter_overall = collections.Counter()
-    for c in counters:
-        counter_overall.update(c)
+    _ = [counter_overall.update(c) for c in counters]
 
     n_text = len(text)
 
