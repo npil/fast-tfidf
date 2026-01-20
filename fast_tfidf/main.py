@@ -59,7 +59,6 @@ def get_vocabulary_and_idf_weights(
 ) -> tuple[list[str], list[float]]:
     counters = count_tokens_sharded(text, remove_stopwords=remove_stopwords, use_bigrams=use_bigrams)
 
-    counter_overall = collections.Counter()
     counter_overall: collections.Counter[str] = collections.Counter()
     _ = [counter_overall.update(c) for c in counters]
 
