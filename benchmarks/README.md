@@ -2,6 +2,8 @@
 
 This directory contains performance benchmarks and comparison scripts for the fast-tf-idf implementation.
 
+You'll need to install tensorflow yourself to run them. As of the timestamp of this file, tensorflow does not support Python 3.14 so I've removed it from the development dependencies of this package. It can be added again once support for Python 3.14 has been added.
+
 ## Quick Start
 
 ```bash
