@@ -110,9 +110,7 @@ Dependencies are managed using [poetry](https://python-poetry.org).
 There is a [vscode dev container](https://code.visualstudio.com/docs/devcontainers/containers) that can be used for development, or otherwise you can run `make install` in the environment of your choice to install the package and all dependencies (requires poetry and [make](https://www.gnu.org/software/make/)).
 
 We use the following tools to ensure code quality:
-1. [black](https://black.readthedocs.io/en/stable/)
-2. [flake8](https://flake8.pycqa.org/en/latest/)
-3. [isort](https://pycqa.github.io/isort/)
+1. [ruff](https://github.com/astral-sh/ruff)
 4. [mypy](https://mypy.readthedocs.io/en/stable/)
 5. [pytest](https://docs.pytest.org/en/stable/)
 
