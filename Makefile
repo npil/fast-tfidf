@@ -1,24 +1,19 @@
 .PHONY: mypy
 mypy:
-	poetry run mypy .
-
-
-.PHONY: isort
-isort:
-	poetry run isort --check --diff .
+	poetry run mypy . --cache-fine-grained
 
 
 .PHONY: lint
 lint:
 	poetry run ruff check
-	make isort
+	poetry run ruff format --check
 	make mypy
 
 
 .PHONY: fix
 fix:
-	poetry run isort .
 	poetry run ruff format
+	poetry run ruff check --fix
 
 
 .PHONY: app

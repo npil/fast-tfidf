@@ -6,21 +6,17 @@ Measures execution time with various document corpus sizes.
 import random
 import time
 from statistics import mean, stdev
+from typing import Any
 
 import numpy as np
-
-try:
-    from tensorflow.keras.layers import TextVectorization
-
-    TENSORFLOW_AVAILABLE = True
-except ImportError:
-    TENSORFLOW_AVAILABLE = False
-    print("TensorFlow not available. Install with: pip install tensorflow")
+from tensorflow.keras.layers import TextVectorization
 
 from fast_tfidf.main import get_vocabulary_and_idf_weights
 
 
-def generate_realistic_documents(n_docs=1000, words_per_doc_range=(10, 50), vocabulary_size=1000):
+def generate_realistic_documents(
+    n_docs: int = 1000, words_per_doc_range: tuple[int, int] = (10, 50), vocabulary_size: int = 1000
+) -> list[str]:
     """
     Generate realistic-looking text documents for benchmarking.
 
@@ -60,11 +56,13 @@ def generate_realistic_documents(n_docs=1000, words_per_doc_range=(10, 50), voca
     return documents
 
 
-def benchmark_tensorflow(documents, max_tokens=None, n_runs=3):
+def benchmark_tensorflow(
+    documents: list[str], max_tokens: int | None = None, n_runs: int = 3
+) -> dict[str, Any]:
     """Benchmark TensorFlow's TextVectorization."""
-    times = []
+    times: list[float] = []
 
-    for run in range(n_runs):
+    for _ in range(n_runs):
         start_time = time.time()
 
         vectorizer = TextVectorization(
@@ -76,7 +74,6 @@ def benchmark_tensorflow(documents, max_tokens=None, n_runs=3):
         )
         vectorizer.adapt(documents)
 
-        # Get vocabulary
         vocab = [term for term in vectorizer.get_vocabulary() if term and term != "[UNK]"]
 
         # Extract IDF weights for all terms
@@ -101,11 +98,12 @@ def benchmark_tensorflow(documents, max_tokens=None, n_runs=3):
     }
 
 
-def benchmark_fast_tfidf(documents, max_tokens=None, n_runs=3):
-    """Benchmark our fast-tf-idf implementation."""
-    times = []
+def benchmark_fast_tfidf(
+    documents: list[str], max_tokens: int | None = None, n_runs: int = 3
+) -> dict[str, Any]:
+    times: list[float] = []
 
-    for run in range(n_runs):
+    for _ in range(n_runs):
         start_time = time.time()
 
         vocab, idf_weights = get_vocabulary_and_idf_weights(
@@ -125,7 +123,7 @@ def benchmark_fast_tfidf(documents, max_tokens=None, n_runs=3):
     }
 
 
-def format_time(seconds):
+def format_time(seconds: float) -> str:
     """Format time in human-readable format."""
     if seconds < 0.001:
         return f"{seconds * 1000000:.2f} μs"
@@ -135,10 +133,18 @@ def format_time(seconds):
         return f"{seconds:.2f} s"
 
 
-def run_benchmark(n_docs, words_per_doc_range, vocabulary_size, max_tokens=None, n_runs=3):
+def run_benchmark(
+    n_docs: int,
+    words_per_doc_range: tuple[int, int],
+    vocabulary_size: int,
+    max_tokens: int | None = None,
+    n_runs: int = 3,
+) -> dict[str, Any]:
     """Run a single benchmark comparison."""
     print(f"\n{'=' * 70}")
-    print(f"Benchmark: {n_docs:,} documents, {words_per_doc_range[0]}-{words_per_doc_range[1]} words/doc")
+    print(
+        f"Benchmark: {n_docs:,} documents, {words_per_doc_range[0]}-{words_per_doc_range[1]} words/doc"
+    )
     print(f"Vocabulary size: {vocabulary_size:,}, Max tokens: {max_tokens or 'unlimited'}")
     print(f"{'=' * 70}")
 
@@ -152,17 +158,13 @@ def run_benchmark(n_docs, words_per_doc_range, vocabulary_size, max_tokens=None,
 
     # Benchmark TensorFlow
     print(f"\n{'TensorFlow TextVectorization':-^70}")
-    if TENSORFLOW_AVAILABLE:
-        tf_results = benchmark_tensorflow(documents, max_tokens, n_runs)
-        print(f"Mean time:    {format_time(tf_results['mean'])}")
-        print(f"Std dev:      {format_time(tf_results['stdev'])}")
-        print(f"Min time:     {format_time(tf_results['min'])}")
-        print(f"Max time:     {format_time(tf_results['max'])}")
-        print(f"Vocab size:   {tf_results['vocab_size']:,}")
-        print(f"All runs:     {', '.join([format_time(t) for t in tf_results['all_times']])}")
-    else:
-        print("TensorFlow not available")
-        tf_results = None
+    tf_results = benchmark_tensorflow(documents, max_tokens, n_runs)
+    print(f"Mean time:    {format_time(tf_results['mean'])}")
+    print(f"Std dev:      {format_time(tf_results['stdev'])}")
+    print(f"Min time:     {format_time(tf_results['min'])}")
+    print(f"Max time:     {format_time(tf_results['max'])}")
+    print(f"Vocab size:   {tf_results['vocab_size']:,}")
+    print(f"All runs:     {', '.join([format_time(t) for t in tf_results['all_times']])}")
 
     # Benchmark fast-tf-idf
     print(f"\n{'fast-tf-idf Implementation':-^70}")
@@ -175,20 +177,19 @@ def run_benchmark(n_docs, words_per_doc_range, vocabulary_size, max_tokens=None,
     print(f"All runs:     {', '.join([format_time(t) for t in our_results['all_times']])}")
 
     # Comparison
-    if tf_results:
-        print(f"\n{'Comparison':-^70}")
-        speedup = tf_results["mean"] / our_results["mean"]
-        if speedup > 1:
-            print(f"✓ fast-tf-idf is {speedup:.2f}x FASTER than TensorFlow")
-        else:
-            print(f"✗ fast-tf-idf is {1 / speedup:.2f}x SLOWER than TensorFlow")
+    print(f"\n{'Comparison':-^70}")
+    speedup = tf_results["mean"] / our_results["mean"]
+    if speedup > 1:
+        print(f"✓ fast-tf-idf is {speedup:.2f}x FASTER than TensorFlow")
+    else:
+        print(f"✗ fast-tf-idf is {1 / speedup:.2f}x SLOWER than TensorFlow")
 
-        print(f"\nAbsolute difference: {format_time(abs(tf_results['mean'] - our_results['mean']))}")
+    print(f"\nAbsolute difference: {format_time(abs(tf_results['mean'] - our_results['mean']))}")
 
     return {"n_docs": n_docs, "tf_results": tf_results, "our_results": our_results}
 
 
-def main():
+def main() -> None:
     """Main benchmark function."""
     print("=" * 70)
     print("PERFORMANCE BENCHMARK: TensorFlow vs fast-tf-idf")
@@ -196,10 +197,6 @@ def main():
     print("\nThis benchmark compares execution time for vocabulary extraction")
     print("and IDF weight calculation on various corpus sizes.")
     print("=" * 70)
-
-    if not TENSORFLOW_AVAILABLE:
-        print("\nWarning: TensorFlow not available. Will only benchmark fast-tf-idf.")
-        print("Install with: pip install tensorflow")
 
     # Run benchmarks with increasing document counts
     benchmark_configs = [
@@ -225,27 +222,27 @@ def main():
     print("-" * 70)
 
     for result in results:
-        n_docs = result["n_docs"]
-        if result["tf_results"]:
-            tf_time = format_time(result["tf_results"]["mean"])
-            our_time = format_time(result["our_results"]["mean"])
-            speedup = result["tf_results"]["mean"] / result["our_results"]["mean"]
-            speedup_str = f"{speedup:.2f}x" if speedup > 1 else f"-{1 / speedup:.2f}x"
-        else:
-            tf_time = "N/A"
-            our_time = format_time(result["our_results"]["mean"])
-            speedup_str = "N/A"
+        n_docs_val = result["n_docs"]
+        tf_results_val = result["tf_results"]
+        our_results_val = result["our_results"]
+        tf_time = format_time(tf_results_val["mean"])
+        our_time = format_time(our_results_val["mean"])
+        speedup = tf_results_val["mean"] / our_results_val["mean"]
+        speedup_str = f"{speedup:.2f}x" if speedup > 1 else f"-{1 / speedup:.2f}x"
 
-        print(f"{n_docs:<12,} {tf_time:<20} {our_time:<20} {speedup_str:<15}")
+        print(f"{n_docs_val:<12,} {tf_time:<20} {our_time:<20} {speedup_str:<15}")
 
     print("\n" + "=" * 70)
     print("CONCLUSION")
     print("=" * 70)
 
-    if results and results[0]["tf_results"]:
-        avg_speedup = mean(
-            [r["tf_results"]["mean"] / r["our_results"]["mean"] for r in results if r["tf_results"]]
-        )
+    if results:
+        speedups = []
+        for r in results:
+            tf_r = r["tf_results"]
+            our_r = r["our_results"]
+            speedups.append(tf_r["mean"] / our_r["mean"])
+        avg_speedup = mean(speedups)
 
         if avg_speedup > 1:
             print(f"On average, fast-tf-idf is {avg_speedup:.2f}x FASTER than TensorFlow")
@@ -256,9 +253,6 @@ def main():
 
         print("\nNote: These benchmarks measure only the vocabulary and IDF extraction.")
         print("Full vectorization (converting documents to vectors) was not measured.")
-    else:
-        print("TensorFlow benchmarks were not run.")
-        print("Our implementation successfully processed all document sets.")
 
     print("=" * 70)
 

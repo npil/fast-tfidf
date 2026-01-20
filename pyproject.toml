@@ -14,27 +14,78 @@ nltk = "^3.0.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
 mypy = "^1.16.1"
-isort = "^6.0.1"
 ruff = "^0.14.10"
+types-tensorflow = "^2.18.0.20260113"
+tensorflow = "^2.20.0"
 
 [tool.isort]
-line_length=114
+line_length=104
 multi_line_output=3
 include_trailing_comma="True"
 
 [tool.mypy]
-exclude = ["venv", ".venv"]
+exclude = [
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".tox",
+    ".venv",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "service_contract",
+    "docs",
+    "pgdata",
+    "__pycache__",
+]
+
+
 disallow_untyped_defs="True"
 disallow_incomplete_defs="True"
 show_error_codes="True"
 
+[[tool.mypy.overrides]]
+module = "nltk.*"
+ignore_missing_imports = true
+
 [tool.ruff]
-line-length = 114
+line-length = 104
 target-version = "py314"
 extend-exclude = ["__pycache__"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "C90"]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "A",      # flake8-builtins
+    "BLE",    # flake8-blind-except
+]
+ignore = [
+    "E203",   # whitespace before ':' (conflicts with black-style formatting)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "E501",   # line too long (test data strings)
+    "B011",   # assert False
+    "B015",   # pointless comparison (may be intentional in tests)
+    "B017",   # pytest.raises(Exception)
+]
+
+[tool.ruff.lint.isort]
+force-single-line = false
+lines-after-imports = 2
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10

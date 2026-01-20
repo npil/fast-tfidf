@@ -8,9 +8,6 @@ This directory contains performance benchmarks and comparison scripts for the fa
 # Run performance benchmark
 python benchmark.py
 
-# Run comparison with TensorFlow
-python compare_with_tensorflow.py
-
 # Simple side-by-side comparison
 python simple_comparison.py
 ```
@@ -20,7 +17,6 @@ python simple_comparison.py
 ### Scripts
 
 - **`benchmark.py`** - Comprehensive performance benchmark comparing TensorFlow vs fast-tfidf
-- **`compare_with_tensorflow.py`** - Detailed comparison of vocabulary and IDF weights
 - **`simple_comparison.py`** - Comparison between fast-tfidf and tensorflow computed term frequencies and idf weights
 
 ### Documentation
