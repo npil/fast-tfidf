@@ -5,6 +5,14 @@ description = "A fast implementation of tf-idf"
 authors = ["nathan pilkington <npliky@gmail.com>"]
 license = "apache 2.0"
 readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/npil/fast-tfidf"
+Issues = "https://github.com/npil/fast-tfidf/issues"
 
 [tool.poetry.dependencies]
 python = "^3.11"
