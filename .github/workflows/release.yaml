@@ -4,6 +4,7 @@ name: Publish to PyPI
     types: [published]
 
 permissions:
+  actions: read
   contents: read
   id-token: write
 
