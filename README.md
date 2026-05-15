@@ -94,7 +94,7 @@ vectoriser = TextVectorization(
 
 Benchmark results comparing against TensorFlow's TextVectorization:
 
-| Documents | TensorFlow | fast-tf-idf | **Speedup** |
+| Documents | TensorFlow | fast-tfidf | **Speedup** |
 |-----------|------------|-------------|-------------|
 | 100       | 204 ms     | 29 ms       | **7.1x** ⚡ |
 | 1,000     | 1.06 s     | 28 ms       | **38.3x** ⚡⚡ |
