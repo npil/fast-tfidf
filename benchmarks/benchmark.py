@@ -106,8 +106,8 @@ def benchmark_fast_tfidf(
     for _ in range(n_runs):
         start_time = time.time()
 
-        vocab, idf_weights = get_vocabulary_and_idf_weights(
-            documents, n_features=max_tokens, remove_stopwords=False, use_bigrams=False
+        vocab, _ = get_vocabulary_and_idf_weights(
+            documents, n_features=max_tokens, remove_stopwords=False, max_ngrams=1
         )
 
         elapsed = time.time() - start_time

@@ -53,7 +53,7 @@ print("\n" + "-" * 70)
 print("FAST-TF-IDF Implementation")
 print("-" * 70)
 vocab, idf_weights = get_vocabulary_and_idf_weights(
-    documents, n_features=None, remove_stopwords=False, use_bigrams=False
+    documents, n_features=None, remove_stopwords=False, max_ngrams=1
 )
 
 print(f"\nFound {len(vocab)} terms")

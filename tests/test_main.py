@@ -40,7 +40,7 @@ class TestCountTokens:
 
     def test_bigrams(self) -> None:
         documents = ["hello world", "hello world test"]
-        result = count_tokens(documents, use_bigrams=True)
+        result = count_tokens(documents, max_ngrams=2)
 
         assert result["hello world"] == 2  # appears in 2 documents
         assert result["world test"] == 1  # appears in 1 document
@@ -76,10 +76,25 @@ class TestCountTokens:
 
     def test_single_document(self) -> None:
         documents = ["hello world"]
-        result = count_tokens(documents, use_bigrams=True)
+        result = count_tokens(documents, max_ngrams=2)
         assert result["hello"] == 1
         assert result["world"] == 1
         assert result["hello world"] == 1
+
+    def test_trigrams(self) -> None:
+        documents = ["hello world test", "hello world test foo"]
+        result = count_tokens(documents, max_ngrams=3)
+
+        # Unigrams
+        assert result["hello"] == 2
+        assert result["world"] == 2
+        # Bigrams
+        assert result["hello world"] == 2
+        assert result["world test"] == 2
+        assert result["test foo"] == 1
+        # Trigrams
+        assert result["hello world test"] == 2
+        assert result["world test foo"] == 1
 
 
 class TestGetVocabularyAndIdfWeights:
@@ -139,7 +154,7 @@ class TestGetVocabularyAndIdfWeights:
 
     def test_bigrams_in_vocabulary(self) -> None:
         documents = ["hello world", "hello world test"]
-        vocabulary, idf_weights = get_vocabulary_and_idf_weights(documents, use_bigrams=True)
+        vocabulary, _ = get_vocabulary_and_idf_weights(documents, max_ngrams=2)
 
         assert "hello world" in vocabulary
         assert "world test" in vocabulary

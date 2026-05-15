@@ -15,7 +15,7 @@ STOP_WORDS = set(nltk.corpus.stopwords.words("english"))
 def count_tokens(
     text: typing.Sequence[str],
     remove_stopwords: bool = False,
-    use_bigrams: bool = False,
+    max_ngrams: int = 1,
 ) -> collections.Counter:
     word_count: collections.Counter = collections.Counter()
 
@@ -26,25 +26,29 @@ def count_tokens(
 
         word_count.update(set(tokens))
 
-        if use_bigrams:
-            bigrams = zip(tokens, tokens[1:], strict=False)
-            word_count.update(set([" ".join(bigram) for bigram in bigrams]))
+        for n in range(2, max_ngrams + 1):
+            ngrams = zip(*[tokens[i:] for i in range(n)], strict=False)
+            word_count.update(set(" ".join(ngram) for ngram in ngrams))
 
     return word_count
 
 
-def _count_tokens_worker(args: tuple[list[str], dict[str, bool]]) -> collections.Counter[str]:
+def _count_tokens_worker(
+    args: tuple[list[str], bool, int],
+) -> collections.Counter[str]:
     """Worker function for multiprocessing that can be pickled."""
-    text_chunk, kwargs = args
-    return count_tokens(text_chunk, **kwargs)
+    return count_tokens(*args)
 
 
-def count_tokens_sharded(text: typing.Sequence[str], **kwargs: bool) -> list[collections.Counter[str]]:
+def count_tokens_sharded(
+    text: typing.Sequence[str], remove_stopwords: bool = False, max_ngrams: int = 1
+) -> list[collections.Counter[str]]:
     cpu_count = multiprocessing.cpu_count()
 
     text_splits = numpy.array_split(text, cpu_count)
-    args_list: list[tuple[list[str], dict[str, bool]]] = [
-        (split.tolist() if hasattr(split, "tolist") else list(split), kwargs) for split in text_splits
+    args_list: list[tuple[list[str], bool, int]] = [
+        (split.tolist() if hasattr(split, "tolist") else list(split), remove_stopwords, max_ngrams)
+        for split in text_splits
     ]
 
     with multiprocessing.Pool(cpu_count) as p:
@@ -55,9 +59,9 @@ def get_vocabulary_and_idf_weights(
     text: typing.Sequence[str],
     n_features: int | None = None,
     remove_stopwords: bool = False,
-    use_bigrams: bool = False,
+    max_ngrams: int = 1,
 ) -> tuple[list[str], list[float]]:
-    counters = count_tokens_sharded(text, remove_stopwords=remove_stopwords, use_bigrams=use_bigrams)
+    counters = count_tokens_sharded(text, remove_stopwords=remove_stopwords, max_ngrams=max_ngrams)
 
     counter_overall: collections.Counter[str] = collections.Counter()
     _ = [counter_overall.update(c) for c in counters]
