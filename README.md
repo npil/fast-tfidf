@@ -41,7 +41,7 @@ vocabulary, idf_weights = get_vocabulary_and_idf_weights(
     documents,
     n_features=1000,
     remove_stopwords=False,
-    use_bigrams=False
+    max_ngrams=1
 )
 
 print(f"Vocabulary size: {len(vocabulary)}")
@@ -56,7 +56,7 @@ print(f"IDF weights: {idf_weights[:5]}")
 vocabulary, idf_weights = get_vocabulary_and_idf_weights(
     documents,
     n_features=2000,
-    use_bigrams=True  # Enable bigrams
+    max_ngrams=2  # Include bigrams
 )
 ```
 
