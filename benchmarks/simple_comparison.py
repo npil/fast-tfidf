@@ -7,6 +7,7 @@ from tensorflow.keras.layers import TextVectorization
 
 from fast_tfidf.main import get_vocabulary_and_idf_weights
 
+
 # Test documents
 documents = [
     "machine learning is amazing",
@@ -59,7 +60,7 @@ print(f"\nFound {len(vocab)} terms")
 print("\nTop 10 terms (by document frequency):")
 print(f"{'Term':<20} {'IDF Weight':<15}")
 print("-" * 35)
-for term, idf in zip(vocab[:10], idf_weights[:10]):
+for term, idf in zip(vocab[:10], idf_weights[:10], strict=True):
     print(f"{term:<20} {idf:<15.6f}")
 
 # Side-by-side comparison
@@ -77,7 +78,7 @@ for term in tf_vocab:
     term_idx = vectorizer.get_vocabulary().index(term)
     tf_idf_dict[term] = float(result[0, term_idx].numpy())
 
-our_idf_dict = dict(zip(vocab, idf_weights))
+our_idf_dict = dict(zip(vocab, idf_weights, strict=True))
 
 # Compare common terms
 common_terms = set(tf_vocab) & set(vocab)
