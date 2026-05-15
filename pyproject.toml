@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fast_tfidf"
-version = "0.1.0"
+version = "0.1.1"
 description = "A fast implementation of tf-idf"
 authors = ["nathan pilkington <npliky@gmail.com>"]
 license = "apache 2.0"
