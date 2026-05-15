@@ -3,8 +3,8 @@
 A blazingly fast TF-IDF implementation for Python that uses multiprocessing to parallelise document processing.
 
 **Key Features:**
-- 🚀 orders of magnitude **faster** than TensorFlow's TextVectorization (see benchmarks below)
-- 🔧 **tensorflow-compatible** vocabulary and idf weights can be used with TensorFlow's TextVectorization, it just computes them much quicker
+- 🚀 orders of magnitude faster than TensorFlow's TextVectorization (see benchmarks below)
+- 🔧 tensorflow-compatible vocabulary and idf weights can be used with TensorFlow's TextVectorization, it just computes them much quicker
 
 ## Installation
 
